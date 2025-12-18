@@ -33,10 +33,5 @@
     "JWT_SECRET": "@jwt_secret",
     "EMAIL_USER": "@email_user",
     "EMAIL_PASS": "@email_pass"
-  },
-  "functions": {
-    "app.js": {
-      "maxDuration": 30
-    }
   }
 }
