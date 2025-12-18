@@ -1,0 +1,69 @@
+/* css/auth.css - Authentication Page Styles */
+
+/* Animasi Keyframes */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-page {
+  background: white;
+  animation: fadeIn 0.6s ease-out;
+}
+
+.auth-page h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 20px;
+  animation: fadeInDown 0.5s ease-out;
+}
+
+.form-container {
+  margin-bottom: 20px;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+@media (max-width: 500px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Input Group for Password Fields */
+.input-group {
+  display: flex;
+  gap: 10px;
+  animation: fadeInUp 0.7s ease-out 0.1s both;
+}
+
+.input-group input {
+  flex: 1;
+}
+
+.input-group button {
+  flex: 0 0 auto;
+  width: auto;
+  padding: 12px 20px;
+}
+
+@media (max-width: 500px) {
+  .input-group {
+    flex-direction: column;
+  }
+
+  .input-group button {
+    width: 100%;
+  }
+}

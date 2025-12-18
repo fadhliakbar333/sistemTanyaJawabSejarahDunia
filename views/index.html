@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatBot Sejarah Dunia</title>
+  
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Page Specific Styles -->
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/chatbot.css">
+  <link rel="stylesheet" href="css/about.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>⚔️ ChatBot Sejarah Dunia</h1>
+      <p>Ajukan pertanyaan tentang peristiwa sejarah dunia</p>
+    </div>
+
+    <!-- AUTH PAGE -->
+    <div id="authPage" class="page active">
+      <div class="content">
+        <div id="authAlert"></div>
+
+        <!-- LOGIN FORM -->
+        <div id="loginForm">
+          <h2>Login</h2>
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" placeholder="example@gmail.com" required>
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Kata Sandi</label>
+            <input type="password" id="loginPassword" placeholder="Masukkan kata sandi" required>
+          </div>
+          <button class="btn" onclick="login()">Login</button>
+          
+          <div class="toggle-link">
+            Belum punya akun? <button onclick="toggleForm()">Daftar di sini</button>
+          </div>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <div id="registerForm" style="display: none;">
+          <h2>Daftar Akun</h2>
+          <div class="form-group">
+            <label for="registerName">Nama Lengkap</label>
+            <input type="text" id="registerName" placeholder="Nama Anda" required>
+          </div>
+          <div class="form-group">
+            <label for="registerEmail">Email</label>
+            <input type="email" id="registerEmail" placeholder="example@gmail.com" required>
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Kata Sandi</label>
+            <input type="password" id="registerPassword" placeholder="Minimal 6 karakter" required>
+          </div>
+          <button class="btn" onclick="register()">Daftar</button>
+
+          <div class="toggle-link">
+            Sudah punya akun? <button onclick="toggleForm()">Login di sini</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VERIFY EMAIL PAGE -->
+    <div id="verifyPage" class="page">
+      <div class="content" style="max-width: 500px; margin: 50px auto; padding: 40px 20px; text-align: center; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+        <h2 style="color: #667eea; margin-bottom: 20px;">✉️ Verifikasi Email</h2>
+        <p style="color: #666; margin: 15px 0;">Kode verifikasi telah dikirim ke email Anda.</p>
+        <p style="color: #999; font-size: 14px; margin: 20px 0;">Kode berlaku selama 15 menit.</p>
+        
+        <div class="form-group" style="margin-top: 30px;">
+          <label for="verifyCode">Masukkan Kode Verifikasi (6 digit)</label>
+          <input 
+            type="text" 
+            id="verifyCode" 
+            placeholder="000000" 
+            maxlength="6"
+            style="font-size: 24px; letter-spacing: 5px; text-align: center; font-weight: bold;"
+            onkeypress="if(event.key === 'Enter') verifyEmail()"
+          >
+        </div>
+
+        <button class="btn" onclick="verifyEmail()" style="width: 100%; margin-top: 20px;">Verifikasi Email</button>
+        
+        <div style="margin-top: 20px;">
+          <p style="color: #666; font-size: 14px;">Tidak menerima kode?</p>
+          <button class="btn btn-secondary" onclick="resendVerification()" style="width: 100%; margin-top: 10px; background: #f0f0f0; color: #667eea; border: 2px solid #667eea;">Kirim Ulang Kode</button>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <button onclick="backToAuth()" style="background: none; border: none; color: #667eea; cursor: pointer; text-decoration: underline; font-size: 14px;">← Kembali ke Login</button>
+        </div>
+
+        <div id="verifyAlert"></div>
+      </div>
+    </div>
+
+    <!-- CHATBOT PAGE -->
+    <div id="chatbotPage" class="page">
+      <div class="content">
+        <div class="user-info">
+          <div class="user-info-text">
+            Selamat datang, <strong id="userName"></strong>! 👋
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="logout-btn btn-small" onclick="showPage('aboutWebPage')" style="background: #667eea; flex: 1;">Web</button>
+            <button class="logout-btn btn-small" onclick="showPage('aboutDevPage')" style="background: #667eea; flex: 1;">Developer</button>
+            <button class="logout-btn btn-small" onclick="logout()">Logout</button>
+          </div>
+        </div>
+
+        <div id="chatAlert"></div>
+
+        <div class="chat-input-group">
+          <input 
+            type="text" 
+            id="pertanyaan" 
+            placeholder="Masukkan pertanyaan sejarah Anda di sini..."
+            onkeypress="handleKeyPress(event)"
+          >
+          <button class="btn btn-small" onclick="kirimPertanyaan()">Kirim</button>
+        </div>
+
+        <div id="jawaban" class="jawaban-box"></div>
+      </div>
+    </div>
+
+    <!-- ABOUT WEB PAGE -->
+    <div id="aboutWebPage" class="page">
+      <div class="content">
+        <div class="about-header">
+          <h2>💻 Tentang ChatBot Sejarah Dunia</h2>
+          <p>Informasi lengkap tentang aplikasi web kami</p>
+        </div>
+
+        <div class="about-content">
+          <!-- Project Description -->
+          <div class="about-section">
+            <h3>🎯 Tentang Proyek</h3>
+            <p>ChatBot Sejarah Dunia adalah aplikasi web berbasis real-time yang dirancang untuk membantu pengguna belajar dan bertanya jawab tentang peristiwa-peristiwa penting dalam sejarah dunia.</p>
+            <p><strong>Visi:</strong> Membuat pembelajaran sejarah menjadi interaktif, menyenangkan, dan mudah diakses oleh semua orang.</p>
+          </div>
+
+          <!-- Features -->
+          <div class="about-section">
+            <h3>✨ Fitur Unggulan</h3>
+            <ul>
+              <li>Registrasi dan login dengan keamanan tinggi</li>
+              <li>Email notifikasi untuk konfirmasi pendaftaran</li>
+              <li>Pencarian topik sejarah real-time</li>
+              <li>Riwayat percakapan yang tersimpan per pengguna</li>
+              <li>Interface responsif untuk semua perangkat (mobile, tablet, desktop)</li>
+              <li>Database sejarah yang komprehensif dan terus berkembang</li>
+              <li>Sistem keamanan berbasis JWT Token</li>
+            </ul>
+          </div>
+
+          <!-- Technology Stack -->
+          <div class="about-section">
+            <h3>⚙️ Teknologi yang Digunakan</h3>
+            <p><strong>Backend:</strong></p>
+            <ul>
+              <li>Node.js - Runtime JavaScript</li>
+              <li>Express.js - Web Framework</li>
+              <li>Socket.IO - Real-time Communication</li>
+              <li>MongoDB - NoSQL Database</li>
+              <li>Mongoose - ODM (Object Data Modeling)</li>
+              <li>JWT - Authentication & Authorization</li>
+              <li>Bcrypt - Password Hashing & Security</li>
+              <li>Nodemailer - Email Sending Service</li>
+            </ul>
+            <p style="margin-top: 12px;"><strong>Frontend:</strong></p>
+            <ul>
+              <li>HTML5 - Structure & Semantics</li>
+              <li>CSS3 - Styling & Responsive Design</li>
+              <li>JavaScript (Vanilla) - Client-side Logic</li>
+              <li>Socket.IO Client - Real-time Communication</li>
+            </ul>
+          </div>
+
+          <!-- Project Info -->
+          <div class="about-section">
+            <h3>📋 Informasi Proyek</h3>
+            <ul>
+              <li><strong>Nama Proyek:</strong> Sistem Tanya Jawab Sejarah Dunia</li>
+              <li><strong>Versi:</strong> 1.0</li>
+              <li><strong>Tujuan:</strong> Edukasi dan pembelajaran sejarah dunia secara interaktif</li>
+              <li><strong>Target Pengguna:</strong> Pelajar, Mahasiswa, Penggemar Sejarah</li>
+              <li><strong>Tahun Pengembangan:</strong> 2025</li>
+              <li><strong>Status:</strong> Active Development</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="about-footer-nav">
+          <button class="btn btn-secondary" onclick="showPage('aboutDevPage')">Lihat Developer →</button>
+          <button class="btn btn-secondary" onclick="showPage('chatbotPage')">← Kembali ke Chat</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOUT DEVELOPER PAGE -->
+    <div id="aboutDevPage" class="page">
+      <div class="content">
+        <div class="about-header">
+          <h2>👨‍💻 Tim Pengembang</h2>
+          <p>Mengenal orang di balik ChatBot Sejarah Dunia</p>
+        </div>
+
+        <div class="about-content">
+          <!-- Developer 1 -->
+          <div class="developer-card">
+            <div class="developer-avatar">👨</div>
+            <div class="developer-name">Fadhli Akbar Sahendra</div>
+            <div class="developer-role">23343036</div>
+            <div class="developer-desc">Mahasiswa Informatika Universitas Negeri Padang</div>
+          </div>
+
+          <!-- Developer 2 -->
+          <div class="developer-card">
+            <div class="developer-avatar">👨</div>
+            <div class="developer-name">Frans Surya Pati Harau</div>
+            <div class="developer-role">23343039</div>
+            <div class="developer-desc">Mahasiswa Informatika Universitas Negeri Padang</div>
+          </div>
+
+          <!-- Philosophy -->
+          <div class="about-section">
+            <h3>💡 Filosofi Pengembangan</h3>
+            <p>"Code yang baik bukan hanya yang bekerja, tapi yang dapat dipahami, dimaintain, dan dikembangkan oleh orang lain. Setiap project adalah kesempatan untuk belajar dan berbagi pengetahuan."</p>
+            <p style="margin-top: 12px;"><strong>Prinsip Kami:</strong></p>
+            <ul>
+              <li>Keamanan adalah prioritas utama</li>
+              <li>User experience yang intuitif dan responsif</li>
+              <li>Code yang clean, scalable, dan maintainable</li>
+              <li>Dokumentasi yang jelas dan lengkap</li>
+              <li>Continuous learning dan improvement</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="about-footer-nav">
+          <button class="btn btn-secondary" onclick="showPage('aboutWebPage')">← Kembali ke Web Info</button>
+          <button class="btn btn-secondary" onclick="showPage('chatbotPage')">Kembali ke Chat →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Powered by ChatBot Sejarah v1.0</p>
+    </div>
+  </div>
+
+  <!-- Socket.IO -->
+  <script src="/socket.io/socket.io.js"></script>
+  
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/chatbot.js"></script>
+</body>
+</html>

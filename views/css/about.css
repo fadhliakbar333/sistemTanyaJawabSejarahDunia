@@ -1,0 +1,522 @@
+/* ABOUT PAGES STYLES - For aboutWebPage and aboutDevPage dengan Tema Sejarah */
+
+/* Animasi Keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes cardHover {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+#aboutWebPage,
+#aboutDevPage {
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #3d2817 0%, #2c1810 50%, #1a0f08 100%);
+  background-attachment: fixed;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.about-content {
+  background: linear-gradient(135deg, #f5e6d3 0%, #e8d4b8 100%);
+  border-radius: 0;
+  padding: 40px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  max-width: 1000px;
+  margin: 0 auto;
+  border: 3px solid #8b7355;
+  position: relative;
+  animation: scaleIn 0.6s ease-out;
+}
+
+/* Efek kertas tua */
+.about-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.02) 2px,
+      rgba(0, 0, 0, 0.02) 4px
+    ),
+    radial-gradient(ellipse at 20% 50%, rgba(200, 100, 0, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.about-header {
+  text-align: center;
+  padding: 30px 0 30px 0;
+  border-bottom: 3px solid #8b6f47;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 1;
+  animation: slideInFromLeft 0.7s ease-out;
+}
+
+.about-header::after {
+  content: '✦ ✦ ✦';
+  display: block;
+  color: #c19a6b;
+  font-size: 14px;
+  margin-top: 12px;
+  letter-spacing: 8px;
+}
+
+.about-header h2 {
+  font-size: 36px;
+  color: #5c4033;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+  font-family: 'Georgia', serif;
+  letter-spacing: 1px;
+}
+
+.about-header p {
+  color: #6b5842;
+  font-size: 16px;
+  margin: 0;
+  font-style: italic;
+}
+
+.about-section {
+  margin: 30px 0;
+  padding: 25px;
+  background: linear-gradient(135deg, #e8d4b8 0%, #dcc7a8 100%);
+  border-left: 6px solid #8b6f47;
+  border: 2px solid #c19a6b;
+  border-radius: 0;
+  position: relative;
+  z-index: 1;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  animation: fadeInUp 0.6s ease-out;
+  transition: all 0.3s ease;
+}
+
+.about-section:hover {
+  animation: cardHover 0.6s ease-in-out infinite;
+  box-shadow: 0 10px 30px rgba(91, 64, 51, 0.3), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.about-section h3 {
+  color: #5c4033;
+  font-size: 24px;
+  margin: 0 0 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-family: 'Georgia', serif;
+  letter-spacing: 0.5px;
+}
+
+.about-section p {
+  color: #3d2817;
+  line-height: 1.8;
+  margin: 12px 0;
+  font-size: 15px;
+  font-family: 'Georgia', serif;
+}
+
+.about-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.about-section ul li {
+  color: #3d2817;
+  padding: 12px 0 12px 35px;
+  position: relative;
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 8px;
+  font-family: 'Georgia', serif;
+}
+
+.about-section ul li:before {
+  content: "➣";
+  position: absolute;
+  left: 8px;
+  color: #8b6f47;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* Developer Card Styles */
+.developer-card {
+  background: linear-gradient(135deg, #8b6f47 0%, #6b5842 100%);
+  border-radius: 0;
+  padding: 40px;
+  text-align: center;
+  color: #f5e6d3;
+  margin: 25px 0;
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #5c4033;
+}
+
+.developer-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.developer-avatar {
+  font-size: 70px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.developer-name {
+  font-size: 26px;
+  font-weight: bold;
+  margin: 15px 0;
+  position: relative;
+  z-index: 1;
+  font-family: 'Georgia', serif;
+  letter-spacing: 1px;
+}
+
+.developer-role {
+  font-size: 14px;
+  opacity: 0.95;
+  margin-bottom: 15px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 8px 15px;
+  border-radius: 0;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+}
+
+.developer-desc {
+  font-size: 15px;
+  line-height: 1.8;
+  margin: 20px 0;
+  opacity: 0.95;
+  position: relative;
+  z-index: 1;
+  font-family: 'Georgia', serif;
+}
+
+/* Tech Stack / Tech Badges */
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.tech-badge {
+  background: rgba(255, 255, 255, 0.15);
+  color: #f5e6d3;
+  padding: 8px 14px;
+  border-radius: 0;
+  font-size: 12px;
+  font-weight: 500;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  cursor: default;
+  font-family: 'Georgia', serif;
+}
+
+.tech-badge:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.about-footer-nav {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 35px;
+  padding-top: 25px;
+  border-top: 2px dashed #c19a6b;
+  flex-wrap: wrap;
+}
+
+.about-footer-nav button {
+  padding: 12px 24px;
+  font-size: 14px;
+  border-radius: 0;
+  border: 2px solid #8b6f47;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  min-width: 150px;
+  font-family: 'Georgia', serif;
+  background: linear-gradient(135deg, #c19a6b 0%, #a0826d 100%);
+  color: #f5e6d3;
+}
+
+.about-footer-nav .btn,
+.about-footer-nav .btn-secondary {
+  background: linear-gradient(135deg, #8b6f47 0%, #6b5842 100%);
+  color: #f5e6d3;
+  border: 2px solid #5c4033;
+}
+
+.about-footer-nav .btn:hover,
+.about-footer-nav .btn-secondary:hover {
+  background: linear-gradient(135deg, #9b7f57 0%, #7b6852 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(91, 64, 51, 0.4);
+}
+
+/* About Links for Navigation */
+.about-links {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.about-links button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  background: #f0f0f0;
+  color: #667eea;
+  border: 1px solid #e0e0e0;
+}
+
+.about-links button:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Responsive Design for Tablets */
+@media (max-width: 768px) {
+  #aboutWebPage,
+  #aboutDevPage {
+    padding: 15px;
+  }
+
+  .about-content {
+    padding: 20px;
+  }
+
+  .about-header h2 {
+    font-size: 26px;
+  }
+
+  .about-section {
+    margin: 20px 0;
+    padding: 15px;
+  }
+
+  .about-section h3 {
+    font-size: 19px;
+  }
+
+  .about-section p {
+    font-size: 14px;
+  }
+
+  .about-section ul li {
+    font-size: 14px;
+    padding: 8px 0 8px 25px;
+  }
+
+  .developer-card {
+    padding: 30px;
+  }
+
+  .developer-avatar {
+    font-size: 56px;
+  }
+
+  .developer-name {
+    font-size: 22px;
+  }
+
+  .tech-stack {
+    gap: 8px;
+  }
+
+  .tech-badge {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .about-footer-nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .about-footer-nav button {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .about-links {
+    gap: 10px;
+  }
+
+  .about-links button {
+    flex: 1;
+    min-width: 120px;
+  }
+}
+
+/* Responsive Design for Mobile */
+@media (max-width: 480px) {
+  #aboutWebPage,
+  #aboutDevPage {
+    padding: 10px;
+  }
+
+  .about-content {
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .about-header {
+    padding: 15px 0 20px 0;
+    margin-bottom: 20px;
+  }
+
+  .about-header h2 {
+    font-size: 22px;
+  }
+
+  .about-header p {
+    font-size: 14px;
+  }
+
+  .about-section {
+    margin: 15px 0;
+    padding: 12px;
+    border-left-width: 4px;
+  }
+
+  .about-section h3 {
+    font-size: 17px;
+    margin-bottom: 12px;
+  }
+
+  .about-section p {
+    font-size: 13px;
+    margin: 10px 0;
+  }
+
+  .about-section ul li {
+    font-size: 13px;
+    padding: 7px 0 7px 22px;
+    margin-bottom: 6px;
+  }
+
+  .developer-card {
+    padding: 20px;
+    margin: 15px 0;
+  }
+
+  .developer-avatar {
+    font-size: 48px;
+    margin-bottom: 15px;
+  }
+
+  .developer-name {
+    font-size: 18px;
+  }
+
+  .developer-role {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+
+  .developer-desc {
+    font-size: 13px;
+    margin: 15px 0;
+  }
+
+  .tech-stack {
+    gap: 6px;
+    margin: 15px 0;
+  }
+
+  .tech-badge {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  .about-footer-nav {
+    margin-top: 20px;
+    padding-top: 15px;
+    gap: 10px;
+  }
+
+  .about-footer-nav button {
+    padding: 10px 16px;
+    font-size: 13px;
+    min-width: auto;
+  }
+
+  .about-links {
+    gap: 8px;
+    margin: 15px 0;
+  }
+
+  .about-links button {
+    padding: 8px 12px;
+    font-size: 12px;
+    width: 100%;
+  }
+}
