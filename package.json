@@ -4,7 +4,8 @@
   "description": "Program Sistem Tanya Jawab Sejarah Dunia Berbasis Web Menggunakan ChatBot Real-Time dan Basis Data MongoDB",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "build": "echo 'Build script - no compilation needed'"
   },
   "author": "Pengembang Sistem",
   "license": "ISC",
