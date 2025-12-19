@@ -26,42 +26,42 @@
         <div id="authAlert"></div>
 
         <!-- LOGIN FORM -->
-        <div id="loginForm">
+        <div id="formMasuk">
           <h2>Login</h2>
           <div class="form-group">
-            <label for="loginEmail">Email</label>
-            <input type="email" id="loginEmail" placeholder="example@gmail.com" required>
+            <label for="emailMasuk">Email</label>
+            <input type="email" id="emailMasuk" placeholder="example@gmail.com" required>
           </div>
           <div class="form-group">
-            <label for="loginPassword">Kata Sandi</label>
-            <input type="password" id="loginPassword" placeholder="Masukkan kata sandi" required>
+            <label for="kataSandiMasuk">Kata Sandi</label>
+            <input type="password" id="kataSandiMasuk" placeholder="Masukkan kata sandi" required>
           </div>
-          <button class="btn" onclick="login()">Login</button>
+          <button class="btn" onclick="masuk()">Login</button>
           
           <div class="toggle-link">
-            Belum punya akun? <button onclick="toggleForm()">Daftar di sini</button>
+            Belum punya akun? <button onclick="tukarForm()">Daftar di sini</button>
           </div>
         </div>
 
         <!-- REGISTER FORM -->
-        <div id="registerForm" style="display: none;">
+        <div id="formDaftar" style="display: none;">
           <h2>Daftar Akun</h2>
           <div class="form-group">
-            <label for="registerName">Nama Lengkap</label>
-            <input type="text" id="registerName" placeholder="Nama Anda" required>
+            <label for="namaLengkap">Nama Lengkap</label>
+            <input type="text" id="namaLengkap" placeholder="Nama Anda" required>
           </div>
           <div class="form-group">
-            <label for="registerEmail">Email</label>
-            <input type="email" id="registerEmail" placeholder="example@gmail.com" required>
+            <label for="emailDaftar">Email</label>
+            <input type="email" id="emailDaftar" placeholder="example@gmail.com" required>
           </div>
           <div class="form-group">
-            <label for="registerPassword">Kata Sandi</label>
-            <input type="password" id="registerPassword" placeholder="Minimal 6 karakter" required>
+            <label for="kataSandiDaftar">Kata Sandi</label>
+            <input type="password" id="kataSandiDaftar" placeholder="Minimal 6 karakter" required>
           </div>
-          <button class="btn" onclick="register()">Daftar</button>
+          <button class="btn" onclick="daftar()">Daftar</button>
 
           <div class="toggle-link">
-            Sudah punya akun? <button onclick="toggleForm()">Login di sini</button>
+            Sudah punya akun? <button onclick="tukarForm()">Login di sini</button>
           </div>
         </div>
       </div>
@@ -75,26 +75,26 @@
         <p style="color: #999; font-size: 14px; margin: 20px 0;">Kode berlaku selama 15 menit.</p>
         
         <div class="form-group" style="margin-top: 30px;">
-          <label for="verifyCode">Masukkan Kode Verifikasi (6 digit)</label>
+          <label for="kodeVerifikasi">Masukkan Kode Verifikasi (6 digit)</label>
           <input 
             type="text" 
-            id="verifyCode" 
+            id="kodeVerifikasi" 
             placeholder="000000" 
             maxlength="6"
             style="font-size: 24px; letter-spacing: 5px; text-align: center; font-weight: bold;"
-            onkeypress="if(event.key === 'Enter') verifyEmail()"
+            onkeypress="if(event.key === 'Enter') verifikasiEmail()"
           >
         </div>
 
-        <button class="btn" onclick="verifyEmail()" style="width: 100%; margin-top: 20px;">Verifikasi Email</button>
+        <button class="btn" onclick="verifikasiEmail()" style="width: 100%; margin-top: 20px;">Verifikasi Email</button>
         
         <div style="margin-top: 20px;">
           <p style="color: #666; font-size: 14px;">Tidak menerima kode?</p>
-          <button class="btn btn-secondary" onclick="resendVerification()" style="width: 100%; margin-top: 10px; background: #f0f0f0; color: #667eea; border: 2px solid #667eea;">Kirim Ulang Kode</button>
+          <button class="btn btn-secondary" onclick="kirimUlangKode()" style="width: 100%; margin-top: 10px; background: #f0f0f0; color: #667eea; border: 2px solid #667eea;">Kirim Ulang Kode</button>
         </div>
 
         <div style="margin-top: 20px;">
-          <button onclick="backToAuth()" style="background: none; border: none; color: #667eea; cursor: pointer; text-decoration: underline; font-size: 14px;">← Kembali ke Login</button>
+          <button onclick="kembaliKeMasuk()" style="background: none; border: none; color: #667eea; cursor: pointer; text-decoration: underline; font-size: 14px;">← Kembali ke Login</button>
         </div>
 
         <div id="verifyAlert"></div>
@@ -120,14 +120,14 @@
         <div class="chat-input-group">
           <input 
             type="text" 
-            id="pertanyaan" 
-            placeholder="Masukkan pertanyaan sejarah Anda di sini..."
-            onkeypress="handleKeyPress(event)"
+            id="inputPertanyaan" 
+            placeholder="Masukkan topik sejarah Anda di sini..."
+            onkeypress="tanganiTekanTombol(event)"
           >
           <button class="btn btn-small" onclick="kirimPertanyaan()">Kirim</button>
         </div>
 
-        <div id="jawaban" class="jawaban-box"></div>
+        <div id="kotakJawaban" class="jawaban-box"></div>
       </div>
     </div>
 

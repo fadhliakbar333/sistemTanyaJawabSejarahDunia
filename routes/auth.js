@@ -1,3 +1,15 @@
+/**
+ * ROUTES - AUTENTIKASI
+ * File: routes/auth.js
+ * 
+ * Mengelola endpoint untuk:
+ * - Register pengguna baru
+ * - Verifikasi email dengan kode 6 digit
+ * - Pengiriman ulang kode verifikasi
+ * - Login pengguna
+ * - Verifikasi token JWT
+ */
+
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
@@ -8,34 +20,50 @@ const kirimEmail = require('../config/email');
 const JWT_SECRET = process.env.JWT_SECRET || 'secret_key_sejarah_dunia_2024';
 
 /**
- * Fungsi untuk generate kode verifikasi 6 digit
+ * Fungsi untuk generate kode verifikasi 6 digit random
+ * Contoh output: 123456, 987654, dll
  * @returns {string} Kode verifikasi 6 digit
  */
 function generateKodeVerifikasi() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Register pengguna
+/**
+ * ENDPOINT: POST /api/auth/register
+ * Mendaftarkan pengguna baru dengan email dan password
+ * 
+ * Request Body:
+ * {
+ *   nama_pengguna: "John Doe",
+ *   email: "john@example.com",
+ *   kata_sandi: "password123"
+ * }
+ * 
+ * Response:
+ * - 201: Registrasi berhasil, kode verifikasi dikirim ke email
+ * - 400: Data tidak lengkap atau email sudah terdaftar
+ * - 500: Error server
+ */
 router.post('/register', async (req, res) => {
   try {
     const { nama_pengguna, email, kata_sandi } = req.body;
 
-    // Validasi input
+    // Validasi: Cek apakah semua field sudah diisi
     if (!nama_pengguna || !email || !kata_sandi) {
       return res.status(400).json({ error: 'Semua field harus diisi' });
     }
 
-    // Cek email sudah ada
+    // Validasi: Cek apakah email sudah terdaftar
     const penggunaSudahAda = await Pengguna.findOne({ email });
     if (penggunaSudahAda) {
       return res.status(400).json({ error: 'Email sudah terdaftar' });
     }
 
-    // Generate kode verifikasi
+    // Generate kode verifikasi 6 digit dan set waktu kadaluarsa 15 menit
     const kodeVerifikasi = generateKodeVerifikasi();
     const waktuKadaluarsa = new Date(Date.now() + 15 * 60 * 1000); // 15 menit
 
-    // Buat pengguna baru (belum terverifikasi)
+    // Buat pengguna baru dengan status email belum terverifikasi
     const penggunaBaru = new Pengguna({ 
       nama_pengguna, 
       email, 
@@ -46,7 +74,7 @@ router.post('/register', async (req, res) => {
     });
     await penggunaBaru.save();
 
-    // Kirim email dengan kode verifikasi
+    // Compose isi email dengan kode verifikasi
     const isiEmail = `
 Halo ${nama_pengguna},
 
@@ -74,13 +102,15 @@ Salam,
 Tim ChatBot Sejarah Dunia
     `.trim();
 
-    // Kirim email secara async
+    // Kirim email secara async (tidak mengganggu flow response)
     try {
       await kirimEmail(email, '📧 Kode Verifikasi Email - ChatBot Sejarah Dunia', isiEmail);
     } catch (emailError) {
+      // Jika email gagal, registrasi tetap berhasil
       console.warn('⚠️ Registrasi berhasil tapi email gagal terkirim:', emailError.message);
     }
 
+    // Kirim response sukses
     res.status(201).json({
       pesan: 'Registrasi berhasil! Kode verifikasi telah dikirim ke email Anda.',
       email: email,
@@ -95,39 +125,54 @@ Tim ChatBot Sejarah Dunia
   }
 });
 
-// Verifikasi email dengan kode
+/**
+ * ENDPOINT: POST /api/auth/verify-email
+ * Memverifikasi email pengguna menggunakan kode 6 digit
+ * 
+ * Request Body:
+ * {
+ *   email: "john@example.com",
+ *   kode_verifikasi: "123456"
+ * }
+ * 
+ * Response:
+ * - 200: Email terverifikasi, JWT token dikirim
+ * - 400: Kode salah/kadaluarsa, email sudah terverifikasi
+ * - 404: Email tidak ditemukan
+ * - 500: Error server
+ */
 router.post('/verify-email', async (req, res) => {
   try {
     const { email, kode_verifikasi } = req.body;
 
-    // Validasi input
+    // Validasi: Cek input tidak kosong
     if (!email || !kode_verifikasi) {
       return res.status(400).json({ error: 'Email dan kode verifikasi harus diisi' });
     }
 
-    // Cari pengguna
+    // Cari pengguna berdasarkan email
     const pengguna = await Pengguna.findOne({ email });
     if (!pengguna) {
       return res.status(404).json({ error: 'Email tidak ditemukan' });
     }
 
-    // Cek apakah email sudah terverifikasi
+    // Cek apakah email sudah terverifikasi sebelumnya
     if (pengguna.email_terverifikasi) {
       return res.status(400).json({ error: 'Email sudah terverifikasi sebelumnya' });
     }
 
-    // Verifikasi kode
+    // Verifikasi kode: Cek kode cocok dan belum kadaluarsa
     if (!pengguna.verifikasiKode(kode_verifikasi)) {
       return res.status(400).json({ error: 'Kode verifikasi salah atau sudah kadaluarsa' });
     }
 
-    // Update status email terverifikasi
+    // Update status email menjadi terverifikasi
     pengguna.email_terverifikasi = true;
     pengguna.kode_verifikasi = null;
     pengguna.waktu_kode_kadaluarsa = null;
     await pengguna.save();
 
-    // Kirim email konfirmasi
+    // Compose email konfirmasi
     const isiEmailKonfirmasi = `
 Halo ${pengguna.nama_pengguna},
 
@@ -143,19 +188,22 @@ Salam,
 Tim ChatBot Sejarah Dunia
     `.trim();
 
+    // Kirim email konfirmasi
     try {
       await kirimEmail(email, '✅ Email Berhasil Diverifikasi - ChatBot Sejarah Dunia', isiEmailKonfirmasi);
     } catch (emailError) {
       console.warn('⚠️ Verifikasi berhasil tapi email konfirmasi gagal:', emailError.message);
     }
 
-    // Buat token JWT
+    // Generate JWT token dengan payload: id, email, nama pengguna
+    // Token berlaku selama 7 hari
     const token = jwt.sign(
       { id: pengguna._id, email: pengguna.email, nama: pengguna.nama_pengguna },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
 
+    // Kirim response dengan token
     res.json({
       pesan: 'Email berhasil diverifikasi! Anda sekarang dapat login.',
       token,
@@ -171,11 +219,26 @@ Tim ChatBot Sejarah Dunia
   }
 });
 
-// Kirim ulang kode verifikasi
+/**
+ * ENDPOINT: POST /api/auth/resend-verification
+ * Mengirim ulang kode verifikasi ke email pengguna
+ * Berguna jika pengguna tidak menerima email pertama
+ * 
+ * Request Body:
+ * {
+ *   email: "john@example.com"
+ * }
+ * 
+ * Response:
+ * - 200: Kode verifikasi baru dikirim
+ * - 400: Email sudah terverifikasi atau email tidak ada
+ * - 500: Error server
+ */
 router.post('/resend-verification', async (req, res) => {
   try {
     const { email } = req.body;
 
+    // Validasi: Cek email tidak kosong
     if (!email) {
       return res.status(400).json({ error: 'Email harus diisi' });
     }
@@ -186,7 +249,7 @@ router.post('/resend-verification', async (req, res) => {
       return res.status(404).json({ error: 'Email tidak ditemukan' });
     }
 
-    // Cek apakah email sudah terverifikasi
+    // Cek: Jika email sudah terverifikasi, tidak perlu kirim ulang
     if (pengguna.email_terverifikasi) {
       return res.status(400).json({ error: 'Email sudah terverifikasi' });
     }
@@ -195,11 +258,12 @@ router.post('/resend-verification', async (req, res) => {
     const kodeVerifikasi = generateKodeVerifikasi();
     const waktuKadaluarsa = new Date(Date.now() + 15 * 60 * 1000);
 
+    // Simpan kode baru ke database
     pengguna.kode_verifikasi = kodeVerifikasi;
     pengguna.waktu_kode_kadaluarsa = waktuKadaluarsa;
     await pengguna.save();
 
-    // Kirim email dengan kode verifikasi baru
+    // Compose email dengan kode verifikasi
     const isiEmail = `
 Halo ${pengguna.nama_pengguna},
 
@@ -218,12 +282,14 @@ Salam,
 Tim ChatBot Sejarah Dunia
     `.trim();
 
+    // Kirim email
     try {
       await kirimEmail(email, '📧 Kode Verifikasi Email (Pengiriman Ulang) - ChatBot Sejarah Dunia', isiEmail);
     } catch (emailError) {
       console.warn('⚠️ Kode tergenerate tapi email gagal terkirim:', emailError.message);
     }
 
+    // Kirim response
     res.json({
       pesan: 'Kode verifikasi baru telah dikirim ke email Anda.',
       email: email
@@ -233,40 +299,58 @@ Tim ChatBot Sejarah Dunia
   }
 });
 
-// Login pengguna
+/**
+ * ENDPOINT: POST /api/auth/login
+ * Login pengguna dengan email dan password
+ * Hanya bisa login jika email sudah terverifikasi
+ * 
+ * Request Body:
+ * {
+ *   email: "john@example.com",
+ *   kata_sandi: "password123"
+ * }
+ * 
+ * Response:
+ * - 200: Login berhasil, JWT token dikirim
+ * - 401: Email/password salah
+ * - 403: Email belum diverifikasi
+ * - 500: Error server
+ */
 router.post('/login', async (req, res) => {
   try {
     const { email, kata_sandi } = req.body;
 
-    // Validasi input
+    // Validasi: Cek email dan password diisi
     if (!email || !kata_sandi) {
       return res.status(400).json({ error: 'Email dan kata sandi harus diisi' });
     }
 
-    // Cari pengguna
+    // Cari pengguna berdasarkan email
     const pengguna = await Pengguna.findOne({ email });
     if (!pengguna) {
       return res.status(401).json({ error: 'Email atau kata sandi salah' });
     }
 
-    // Cek apakah email sudah diverifikasi
+    // Cek: Email harus sudah terverifikasi sebelum bisa login
     if (!pengguna.email_terverifikasi) {
       return res.status(403).json({ error: 'Email Anda belum diverifikasi. Silakan check inbox email Anda untuk kode verifikasi.' });
     }
 
-    // Bandingkan password
+    // Bandingkan password input dengan password di database (terenkripsi)
+    // Menggunakan bcrypt untuk perbandingan yang aman
     const passwordBenar = await pengguna.bandingkanPassword(kata_sandi);
     if (!passwordBenar) {
       return res.status(401).json({ error: 'Email atau kata sandi salah' });
     }
 
-    // Buat token JWT
+    // Generate JWT token untuk session pengguna
     const token = jwt.sign(
       { id: pengguna._id, email: pengguna.email, nama: pengguna.nama_pengguna },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
 
+    // Kirim response dengan token
     res.json({
       pesan: 'Login berhasil',
       token,
@@ -282,14 +366,28 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Verify token
+/**
+ * ENDPOINT: POST /api/auth/verify
+ * Memverifikasi apakah JWT token masih valid
+ * Biasanya digunakan saat aplikasi dimulai untuk check session
+ * 
+ * Request Header:
+ * Authorization: Bearer <token>
+ * 
+ * Response:
+ * - 200: Token valid
+ * - 401: Token tidak valid atau expired
+ */
 router.post('/verify', (req, res) => {
   try {
+    // Ambil token dari Authorization header
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
       return res.status(401).json({ error: 'Token tidak ditemukan' });
     }
 
+    // Verify token dengan JWT_SECRET
+    // Jika expired atau invalid, akan throw error
     const decoded = jwt.verify(token, JWT_SECRET);
     res.json({ valid: true, pengguna: decoded });
   } catch (error) {

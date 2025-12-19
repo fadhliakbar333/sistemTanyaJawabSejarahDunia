@@ -5,10 +5,13 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "build": "echo 'Build script - no compilation needed'"
+    "dev": "node app.js"
   },
   "author": "Pengembang Sistem",
   "license": "ISC",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.3",
@@ -19,5 +22,13 @@
     "nodemailer": "^6.10.1",
     "socket.io": "^4.8.1"
   },
-  "keywords": []
+  "keywords": [
+    "chatbot",
+    "sejarah",
+    "mongodb",
+    "express",
+    "socket.io",
+    "real-time",
+    "web"
+  ]
 }

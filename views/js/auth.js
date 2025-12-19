@@ -1,20 +1,20 @@
 // js/auth.js - Authentication Logic dengan Email Verification
 let currentEmail = '';
 
-function toggleForm() {
-  const loginForm = document.getElementById('loginForm');
-  const registerForm = document.getElementById('registerForm');
-  loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
-  registerForm.style.display = registerForm.style.display === 'none' ? 'block' : 'none';
+function tukarForm() {
+  const formMasuk = document.getElementById('formMasuk');
+  const formDaftar = document.getElementById('formDaftar');
+  formMasuk.style.display = formMasuk.style.display === 'none' ? 'block' : 'none';
+  formDaftar.style.display = formDaftar.style.display === 'none' ? 'block' : 'none';
 }
 
-async function register() {
-  const nama = document.getElementById('registerName').value.trim();
-  const email = document.getElementById('registerEmail').value.trim();
-  const password = document.getElementById('registerPassword').value;
+async function daftar() {
+  const nama = document.getElementById('namaLengkap').value.trim();
+  const email = document.getElementById('emailDaftar').value.trim();
+  const password = document.getElementById('kataSandiDaftar').value;
 
   if (!nama || !email || !password) {
-    showAuthAlert('Semua field harus diisi', 'error');
+    tampilkanAlertAutentikasi('Semua field harus diisi', 'error');
     return;
   }
 
@@ -28,42 +28,42 @@ async function register() {
     const data = await response.json();
 
     if (!response.ok) {
-      showAuthAlert(data.error || 'Registrasi gagal', 'error');
+      tampilkanAlertAutentikasi(data.error || 'Registrasi gagal', 'error');
       return;
     }
 
     // Simpan email untuk verifikasi
     currentEmail = email;
     
-    showAuthAlert('Registrasi berhasil! Kode verifikasi telah dikirim ke email Anda.', 'success');
+    tampilkanAlertAutentikasi('Registrasi berhasil! Kode verifikasi telah dikirim ke email Anda.', 'success');
     
     // Hapus form input
-    document.getElementById('registerName').value = '';
-    document.getElementById('registerEmail').value = '';
-    document.getElementById('registerPassword').value = '';
-    document.getElementById('verifyCode').value = '';
+    document.getElementById('namaLengkap').value = '';
+    document.getElementById('emailDaftar').value = '';
+    document.getElementById('kataSandiDaftar').value = '';
+    document.getElementById('kodeVerifikasi').value = '';
     
     setTimeout(() => {
       showPage('verifyPage');
     }, 1500);
   } catch (error) {
-    showAuthAlert('Terjadi kesalahan: ' + error.message, 'error');
+    tampilkanAlertAutentikasi('Terjadi kesalahan: ' + error.message, 'error');
   }
 }
 
 /**
  * Verifikasi email dengan kode 6 digit
  */
-async function verifyEmail() {
-  const kodeVerifikasi = document.getElementById('verifyCode').value.trim();
+async function verifikasiEmail() {
+  const kodeVerifikasi = document.getElementById('kodeVerifikasi').value.trim();
 
   if (!kodeVerifikasi || kodeVerifikasi.length !== 6) {
-    showVerifyAlert('Kode verifikasi harus 6 digit', 'error');
+    tampilkanAlertVerifikasi('Kode verifikasi harus 6 digit', 'error');
     return;
   }
 
   if (!currentEmail) {
-    showVerifyAlert('Email tidak ditemukan', 'error');
+    tampilkanAlertVerifikasi('Email tidak ditemukan', 'error');
     return;
   }
 
@@ -77,7 +77,7 @@ async function verifyEmail() {
     const data = await response.json();
 
     if (!response.ok) {
-      showVerifyAlert(data.error || 'Verifikasi gagal', 'error');
+      tampilkanAlertVerifikasi(data.error || 'Verifikasi gagal', 'error');
       return;
     }
 
@@ -85,23 +85,23 @@ async function verifyEmail() {
     localStorage.setItem('authToken', data.token);
     currentToken = data.token;
 
-    showVerifyAlert('✅ Email berhasil diverifikasi! Redirecting...', 'success');
+    tampilkanAlertVerifikasi('✅ Email berhasil diverifikasi! Redirecting...', 'success');
     
     setTimeout(() => {
       connectSocket(data.token);
       showPage('chatbotPage');
     }, 1500);
   } catch (error) {
-    showVerifyAlert('Terjadi kesalahan: ' + error.message, 'error');
+    tampilkanAlertVerifikasi('Terjadi kesalahan: ' + error.message, 'error');
   }
 }
 
 /**
  * Kirim ulang kode verifikasi
  */
-async function resendVerification() {
+async function kirimUlangKode() {
   if (!currentEmail) {
-    showVerifyAlert('Email tidak ditemukan', 'error');
+    tampilkanAlertVerifikasi('Email tidak ditemukan', 'error');
     return;
   }
 
@@ -115,31 +115,31 @@ async function resendVerification() {
     const data = await response.json();
 
     if (!response.ok) {
-      showVerifyAlert(data.error || 'Pengiriman ulang gagal', 'error');
+      tampilkanAlertVerifikasi(data.error || 'Pengiriman ulang gagal', 'error');
       return;
     }
 
-    showVerifyAlert('✅ Kode verifikasi baru telah dikirim ke email Anda.', 'success');
+    tampilkanAlertVerifikasi('✅ Kode verifikasi baru telah dikirim ke email Anda.', 'success');
   } catch (error) {
-    showVerifyAlert('Terjadi kesalahan: ' + error.message, 'error');
+    tampilkanAlertVerifikasi('Terjadi kesalahan: ' + error.message, 'error');
   }
 }
 
 /**
  * Kembali ke halaman login
  */
-function backToAuth() {
+function kembaliKeMasuk() {
   currentEmail = '';
-  document.getElementById('verifyCode').value = '';
+  document.getElementById('kodeVerifikasi').value = '';
   showPage('authPage');
 }
 
-async function login() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
+async function masuk() {
+  const email = document.getElementById('emailMasuk').value.trim();
+  const password = document.getElementById('kataSandiMasuk').value;
 
   if (!email || !password) {
-    showAuthAlert('Email dan kata sandi harus diisi', 'error');
+    tampilkanAlertAutentikasi('Email dan kata sandi harus diisi', 'error');
     return;
   }
 
@@ -153,23 +153,23 @@ async function login() {
     const data = await response.json();
 
     if (!response.ok) {
-      showAuthAlert(data.error || 'Login gagal', 'error');
+      tampilkanAlertAutentikasi(data.error || 'Login gagal', 'error');
       return;
     }
 
     localStorage.setItem('authToken', data.token);
     currentToken = data.token;
-    showAuthAlert('Login berhasil!', 'success');
+    tampilkanAlertAutentikasi('Login berhasil!', 'success');
     setTimeout(() => {
       connectSocket(data.token);
       showPage('chatbotPage');
     }, 1000);
   } catch (error) {
-    showAuthAlert('Terjadi kesalahan: ' + error.message, 'error');
+    tampilkanAlertAutentikasi('Terjadi kesalahan: ' + error.message, 'error');
   }
 }
 
-function showAuthAlert(message, type) {
+function tampilkanAlertAutentikasi(message, type) {
   const alertDiv = document.getElementById('authAlert');
   alertDiv.className = `alert ${type}`;
   alertDiv.textContent = message;
@@ -183,7 +183,7 @@ function showAuthAlert(message, type) {
 /**
  * Tampilkan alert di halaman verifikasi
  */
-function showVerifyAlert(message, type) {
+function tampilkanAlertVerifikasi(message, type) {
   const alertDiv = document.getElementById('verifyAlert');
   if (!alertDiv) return;
   
